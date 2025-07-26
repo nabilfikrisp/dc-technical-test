@@ -2,7 +2,7 @@ import { articlesSelector, fetchArticles } from "@/redux/slices/articles.slice";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { useEffect } from "react";
 
-export const useArticles = () => {
+export default function useArticles() {
   const dispatch = useAppDispatch();
 
   const { data, status, error } = useAppSelector(articlesSelector);
@@ -16,4 +16,4 @@ export const useArticles = () => {
   }, [dispatch, data.length, status]);
 
   return { data, status, error, refetch };
-};
+}

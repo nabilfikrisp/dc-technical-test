@@ -1,10 +1,12 @@
 import { useDispatch, useSelector } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import { articlesReducer } from "./slices/articles.slice";
+import { authReducer } from "./slices/auth.slice";
 
 export const store = configureStore({
   reducer: {
     articles: articlesReducer,
+    auth: authReducer,
   },
 });
 

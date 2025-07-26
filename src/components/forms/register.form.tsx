@@ -1,6 +1,9 @@
-import { loginSchema, type LoginSchema } from "@/schemas/auth.schema";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  registerFormSchema,
+  type RegisterFormSchema,
+} from "@/schemas/auth.schema";
 import {
   Form,
   FormControl,
@@ -12,30 +15,28 @@ import {
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import useAuth from "@/hooks/api/use-auth";
-import { toast } from "sonner";
 import { useNavigate } from "react-router";
+import { toast } from "sonner";
 
-export default function LoginForm() {
+export default function RegisterForm() {
   const navigate = useNavigate();
-  const { login, status } = useAuth();
-  const form = useForm<LoginSchema>({
-    resolver: zodResolver(loginSchema),
+  const { register, status } = useAuth();
+  const form = useForm<RegisterFormSchema>({
+    resolver: zodResolver(registerFormSchema),
     defaultValues: {
-      identifier: "",
+      username: "",
+      email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
-  function onSubmit(values: LoginSchema) {
-    login(values, {
+  async function onSubmit(values: RegisterFormSchema) {
+    const { confirmPassword: _confirmPassword, ...registerData } = values;
+    await register(registerData, {
       onSuccess: () => {
-        toast.success("Login successful");
-        form.reset();
+        toast.success("Registration successful! You can now log in.");
         navigate("/explore");
-      },
-      onError: (error) => {
-        console.error("Login error:", error);
-        toast.error("Login failed");
       },
     });
   }
@@ -48,7 +49,20 @@ export default function LoginForm() {
       >
         <FormField
           control={form.control}
-          name="identifier"
+          name="username"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Username</FormLabel>
+              <FormControl>
+                <Input placeholder="Your name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="email"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Email</FormLabel>
@@ -59,7 +73,6 @@ export default function LoginForm() {
             </FormItem>
           )}
         />
-
         <FormField
           control={form.control}
           name="password"
@@ -73,8 +86,21 @@ export default function LoginForm() {
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name="confirmPassword"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Confirm Password</FormLabel>
+              <FormControl>
+                <Input placeholder="******" type="password" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <Button type="submit" disabled={status === "loading"}>
-          Log In
+          Register
         </Button>
       </form>
     </Form>

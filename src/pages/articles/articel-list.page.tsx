@@ -1,4 +1,4 @@
-import { useArticles } from "@/hooks/api/use-articles";
+import useArticles from "@/hooks/api/use-articles";
 
 export default function ArticleListPage() {
   const { data, status, error } = useArticles();

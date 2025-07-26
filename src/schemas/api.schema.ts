@@ -1,6 +1,6 @@
-export type ApiResponse<T> = {
+export type ApiResponse<T, M = undefined> = {
   data: T;
-  meta: Meta;
+  meta: M extends undefined ? undefined | null : M;
 };
 
 export type Meta = {
