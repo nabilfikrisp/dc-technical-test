@@ -31,11 +31,10 @@ export default function LoginForm() {
       onSuccess: () => {
         toast.success("Login successful");
         form.reset();
-        navigate("/explore");
+        navigate("/articles");
       },
-      onError: (error) => {
-        console.error("Login error:", error);
-        toast.error("Login failed");
+      onError: (error: string) => {
+        toast.error(error);
       },
     });
   }

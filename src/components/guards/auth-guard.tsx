@@ -3,9 +3,9 @@ import { Navigate, Outlet } from "react-router";
 import LoadingUI from "../loading-ui";
 
 export default function AuthGuard() {
-  const { user, hydrated, status } = useAuth();
+  const { user, hydrated } = useAuth();
 
-  if (!hydrated || status === "loading") {
+  if (!hydrated) {
     return <LoadingUI message="Checking authentication..." />;
   }
 

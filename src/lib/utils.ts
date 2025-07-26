@@ -1,22 +1,24 @@
+import axios from "axios";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { AxiosError } from "axios";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
 export function parseApiError({
-  err,
+  error,
   fallback = "Something went wrong",
 }: {
-  err: unknown;
+  error: unknown;
   fallback: string;
 }): string {
-  if (err instanceof AxiosError) {
-    const message = err.response?.data?.error?.message || err.message;
+  if (axios.isAxiosError(error)) {
+    const message = error.response?.data?.error?.message;
 
-    return message ?? fallback;
+    if (typeof message === "string") {
+      return message;
+    }
   }
 
   return fallback;
@@ -49,4 +51,12 @@ export function removeLocalStorageItem(key: string): void {
   } catch (e) {
     console.error(`Error removing localStorage item "${key}":`, e);
   }
+}
+
+export function formatDate(dateString: string): string {
+  return new Date(dateString).toLocaleDateString("id-ID", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
 }

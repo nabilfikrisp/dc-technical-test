@@ -8,7 +8,7 @@ import {
 
 export default function LandingPage() {
   return (
-    <div className="mx-auto w-full max-w-[1100px] flex-1">
+    <div className="mx-auto w-full max-w-[1024px] flex-1">
       <section className="flex flex-col items-center justify-center px-5 pt-10 pb-5 text-center">
         <h1 className="mb-4 text-5xl font-extrabold tracking-tight">
           Welcome to TravelTalk

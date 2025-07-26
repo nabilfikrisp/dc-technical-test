@@ -36,7 +36,11 @@ export default function RegisterForm() {
     await register(registerData, {
       onSuccess: () => {
         toast.success("Registration successful! You can now log in.");
-        navigate("/explore");
+        form.reset();
+        navigate("/articles");
+      },
+      onError: (error: string) => {
+        toast.error(error);
       },
     });
   }

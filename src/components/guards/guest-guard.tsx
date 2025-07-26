@@ -3,10 +3,10 @@ import { Navigate, Outlet } from "react-router";
 import LoadingUI from "../loading-ui";
 
 export default function GuestGuard() {
-  const { user, hydrated, status } = useAuth();
+  const { user, hydrated } = useAuth();
 
-  if (!hydrated || status === "loading") {
-    return <LoadingUI message="Checking guest status..." />;
+  if (!hydrated) {
+    return <LoadingUI message="Checking authentication..." />;
   }
 
   if (user) {

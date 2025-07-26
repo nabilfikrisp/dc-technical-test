@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import { LogIn } from "lucide-react";
 import useAuth from "@/hooks/api/use-auth";
 import LogoutButton from "./logout-button";
+import { ThemeToggle } from "./theme-toggle";
 
 export default function Header() {
   const { user, hydrated } = useAuth();
@@ -32,7 +33,7 @@ export default function Header() {
 
   return (
     <header className="bg-background border-border sticky top-0 z-50 border-b shadow-sm">
-      <div className="mx-auto flex max-w-[1100px] items-center justify-end px-5 py-3 sm:justify-between">
+      <div className="mx-auto flex max-w-[1024px] items-center justify-end px-5 py-3 sm:justify-between">
         <Link to="/" className="hidden items-center gap-2 sm:flex">
           <span className="text-primary text-2xl font-bold tracking-tight">
             TravelTalk
@@ -40,6 +41,7 @@ export default function Header() {
         </Link>
 
         <nav className="flex items-center gap-4">
+          <ThemeToggle />
           <Link
             to="/"
             className="text-foreground hover:text-primary font-medium transition-colors"

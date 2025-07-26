@@ -9,19 +9,20 @@ import type {
 } from "@/schemas/auth.schema";
 import { parseApiError } from "@/lib/utils";
 import type { UserSchema } from "@/schemas/user.schema";
+import { API_STATUS, type ApiStatus } from "@/schemas/api-status.shema";
 
 type AuthState = {
   user: UserSchema | null;
   jwt: string | null;
-  status: "idle" | "loading" | "succeeded" | "failed";
+  status: ApiStatus;
   error: string | null;
-  hydrated: boolean; // state to track if auth has been initialized
+  hydrated: boolean; // buat cek hydration localStorage
 };
 
 const initialState: AuthState = {
   user: null,
   jwt: null,
-  status: "idle",
+  status: API_STATUS.IDLE,
   error: null,
   hydrated: false,
 };
@@ -32,10 +33,10 @@ export const loginUser = createAsyncThunk(
     try {
       const res = await api.post<AuthResponse>("/api/auth/local", data);
       return res.data;
-    } catch (err: unknown) {
+    } catch (error: unknown) {
       return rejectWithValue(
         parseApiError({
-          err,
+          error,
           fallback: "Login failed. Please check your credentials.",
         }),
       );
@@ -52,10 +53,10 @@ export const registerUser = createAsyncThunk(
         data,
       );
       return res.data;
-    } catch (err: unknown) {
+    } catch (error: unknown) {
       return rejectWithValue(
         parseApiError({
-          err,
+          error,
           fallback: "Register failed. Please check your credentials.",
         }),
       );
@@ -70,13 +71,13 @@ const authSlice = createSlice({
     logout: (state) => {
       state.user = null;
       state.jwt = null;
-      state.status = "idle";
+      state.status = API_STATUS.IDLE;
       state.error = null;
     },
     initializeAuth: (state, { payload }: { payload: AuthResponse }) => {
       state.user = payload.user;
       state.jwt = payload.jwt;
-      state.status = "succeeded";
+      state.status = API_STATUS.SUCCEEDED;
       state.hydrated = true;
     },
     markAuthHydrated: (state) => {
@@ -86,30 +87,30 @@ const authSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(loginUser.pending, (state) => {
-        state.status = "loading";
+        state.status = API_STATUS.LOADING;
         state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        state.status = "succeeded";
+        state.status = API_STATUS.SUCCEEDED;
         state.user = action.payload.user;
         state.jwt = action.payload.jwt;
       })
       .addCase(loginUser.rejected, (state, action) => {
-        state.status = "failed";
+        state.status = API_STATUS.FAILED;
         state.error = action.payload as string;
       })
 
       .addCase(registerUser.pending, (state) => {
-        state.status = "loading";
+        state.status = API_STATUS.LOADING;
         state.error = null;
       })
       .addCase(registerUser.fulfilled, (state, action) => {
-        state.status = "succeeded";
+        state.status = API_STATUS.SUCCEEDED;
         state.user = action.payload.user;
         state.jwt = action.payload.jwt;
       })
       .addCase(registerUser.rejected, (state, action) => {
-        state.status = "failed";
+        state.status = API_STATUS.FAILED;
         state.error = action.payload as string;
       });
   },

@@ -12,7 +12,7 @@ export const articleSchema = z.object({
   updatedAt: z.string(),
   publishedAt: z.string(),
   locale: z.string().nullable(),
-  category: categorySchema,
+  category: categorySchema.nullable(),
   comments: z.array(commentSchema),
   localizations: z.array(z.unknown()),
 });
