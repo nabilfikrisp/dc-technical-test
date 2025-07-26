@@ -13,7 +13,7 @@ export const useArticles = () => {
     if (status === "idle" && data.length === 0) {
       dispatch(fetchArticles());
     }
-  }, [dispatch]);
+  }, [dispatch, data.length, status]);
 
   return { data, status, error, refetch };
 };

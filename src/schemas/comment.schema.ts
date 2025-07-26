@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const CommentSchema = z.object({
+export const commentSchema = z.object({
   id: z.number(),
   documentId: z.string(),
   content: z.string(),
@@ -10,4 +10,4 @@ export const CommentSchema = z.object({
   locale: z.string().nullable(),
 });
 
-export type Comment = z.infer<typeof CommentSchema>;
+export type CommentSchema = z.infer<typeof commentSchema>;

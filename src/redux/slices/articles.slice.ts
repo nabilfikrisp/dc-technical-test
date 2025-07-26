@@ -5,11 +5,11 @@ import {
   type PayloadAction,
 } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
-import type { Article } from "@/schemas/article.schema";
 import type { ApiResponse } from "@/schemas/api.schema";
+import type { ArticleSchema } from "@/schemas/article.schema";
 
 type ArticlesState = {
-  data: Article[];
+  data: ArticleSchema[];
   meta: {
     pagination: {
       page: number;
@@ -29,14 +29,14 @@ const initialState: ArticlesState = {
   meta: null,
 };
 
-export const fetchArticles = createAsyncThunk<ApiResponse<Article[]>>(
+export const fetchArticles = createAsyncThunk<ApiResponse<ArticleSchema[]>>(
   "articles/fetchAll",
   async () => {
-    const res = await api.get<ApiResponse<Article[]>>(
-      "/api/articles?populate=*"
+    const res = await api.get<ApiResponse<ArticleSchema[]>>(
+      "/api/articles?populate=*",
     );
     return res.data;
-  }
+  },
 );
 
 const articlesSlice = createSlice({
@@ -50,11 +50,11 @@ const articlesSlice = createSlice({
       })
       .addCase(
         fetchArticles.fulfilled,
-        (state, action: PayloadAction<ApiResponse<Article[]>>) => {
+        (state, action: PayloadAction<ApiResponse<ArticleSchema[]>>) => {
           state.status = "succeeded";
           state.data = action.payload.data;
           state.meta = action.payload.meta;
-        }
+        },
       )
       .addCase(fetchArticles.rejected, (state, action) => {
         state.status = "failed";

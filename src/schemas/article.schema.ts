@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { CategorySchema } from "./category.schema";
-import { CommentSchema } from "./comment.schema";
+import { categorySchema } from "./category.schema";
+import { commentSchema } from "./comment.schema";
 
-export const ArticleSchema = z.object({
+export const articleSchema = z.object({
   id: z.number(),
   documentId: z.string(),
   title: z.string(),
@@ -12,9 +12,9 @@ export const ArticleSchema = z.object({
   updatedAt: z.string(),
   publishedAt: z.string(),
   locale: z.string().nullable(),
-  category: CategorySchema,
-  comments: z.array(CommentSchema),
+  category: categorySchema,
+  comments: z.array(commentSchema),
   localizations: z.array(z.unknown()),
 });
 
-export type Article = z.infer<typeof ArticleSchema>;
+export type ArticleSchema = z.infer<typeof articleSchema>;
