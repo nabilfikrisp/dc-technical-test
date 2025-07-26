@@ -25,3 +25,5 @@ dist-ssr
 
 # Ignore .local. files (for local development)
 *.local.*
+
+.env
