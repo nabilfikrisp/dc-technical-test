@@ -1,16 +1,11 @@
-import useAuth from "@/hooks/api/use-auth";
 import { Navigate, Outlet } from "react-router";
-import LoadingUI from "../loading-ui";
+import useAuthStore from "@/stores/auth.store";
 
 export default function GuestGuard() {
-  const { user, hydrated } = useAuth();
-
-  if (!hydrated) {
-    return <LoadingUI message="Checking authentication..." />;
-  }
+  const user = useAuthStore((state) => state.user);
 
   if (user) {
-    return <Navigate to="/explore" replace />;
+    return <Navigate to="/articles" replace />;
   }
 
   return <Outlet />;

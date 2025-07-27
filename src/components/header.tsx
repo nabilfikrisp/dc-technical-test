@@ -1,22 +1,18 @@
 import { Button } from "./ui/button";
 import { Link } from "react-router";
 import { LogIn } from "lucide-react";
-import useAuth from "@/hooks/api/use-auth";
 import LogoutButton from "./logout-button";
 import { ThemeToggle } from "./theme-toggle";
+import useAuthStore from "@/stores/auth.store";
+
+import { articleQueryOptions } from "@/services/articles/queries";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function Header() {
-  const { user, hydrated } = useAuth();
+  const queryClient = useQueryClient();
+  const user = useAuthStore((state) => state.user);
 
   function renderButton() {
-    if (!hydrated) {
-      return (
-        <Button size="sm" variant="outline" disabled>
-          Loading...
-        </Button>
-      );
-    }
-
     if (user) {
       return <LogoutButton />;
     }
@@ -29,6 +25,10 @@ export default function Header() {
         </Link>
       </Button>
     );
+  }
+
+  function prefecthArticles() {
+    queryClient.prefetchQuery(articleQueryOptions());
   }
 
   return (
@@ -49,10 +49,11 @@ export default function Header() {
             Home
           </Link>
           <Link
-            to="/explore"
+            to="/articles"
             className="text-foreground hover:text-primary font-medium transition-colors"
+            onMouseEnter={prefecthArticles}
           >
-            Explore
+            Articles
           </Link>
           {renderButton()}
         </nav>

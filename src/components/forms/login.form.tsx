@@ -11,13 +11,14 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import useAuth from "@/hooks/api/use-auth";
 import { toast } from "sonner";
 import { useNavigate } from "react-router";
+import { useLoginMutation } from "@/services/auth/mutations";
+import { parseApiError } from "@/lib/utils";
 
 export default function LoginForm() {
   const navigate = useNavigate();
-  const { login, status } = useAuth();
+  const { mutateAsync: login, isPending } = useLoginMutation();
   const form = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -26,15 +27,19 @@ export default function LoginForm() {
     },
   });
 
-  function onSubmit(values: LoginSchema) {
-    login(values, {
+  async function onSubmit(values: LoginSchema) {
+    await login(values, {
       onSuccess: () => {
         toast.success("Login successful");
         form.reset();
         navigate("/articles");
       },
-      onError: (error: string) => {
-        toast.error(error);
+      onError: (error: unknown) => {
+        const errorMessage = parseApiError({
+          error,
+          fallback: "Failed to login",
+        });
+        toast.error(errorMessage);
       },
     });
   }
@@ -72,7 +77,7 @@ export default function LoginForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={status === "loading"}>
+        <Button type="submit" disabled={isPending}>
           Log In
         </Button>
       </form>

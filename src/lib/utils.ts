@@ -21,6 +21,10 @@ export function parseApiError({
     }
   }
 
+  if (error instanceof Error) {
+    return error.message;
+  }
+
   return fallback;
 }
 

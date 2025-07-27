@@ -14,13 +14,15 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import useAuth from "@/hooks/api/use-auth";
+
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
+import { useRegisterMutation } from "@/services/auth/mutations";
+import { parseApiError } from "@/lib/utils";
 
 export default function RegisterForm() {
   const navigate = useNavigate();
-  const { register, status } = useAuth();
+  const { mutateAsync: register, isPending } = useRegisterMutation();
   const form = useForm<RegisterFormSchema>({
     resolver: zodResolver(registerFormSchema),
     defaultValues: {
@@ -39,8 +41,12 @@ export default function RegisterForm() {
         form.reset();
         navigate("/articles");
       },
-      onError: (error: string) => {
-        toast.error(error);
+      onError: (error: unknown) => {
+        const errorMessage = parseApiError({
+          error,
+          fallback: "Failed to login",
+        });
+        toast.error(errorMessage);
       },
     });
   }
@@ -103,7 +109,7 @@ export default function RegisterForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={status === "loading"}>
+        <Button type="submit" disabled={isPending}>
           Register
         </Button>
       </form>
