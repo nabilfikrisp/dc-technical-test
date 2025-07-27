@@ -7,12 +7,12 @@ import {
   ClockIcon,
   UserIcon,
   ArrowUpRightIcon,
-  TagIcon,
   MessageCircleIcon,
 } from "lucide-react";
 import { Separator } from "../ui/separator";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router";
+import CategoryCard from "./category-card";
 
 type ArticleCardProps = {
   article: ArticleSchema;
@@ -55,10 +55,7 @@ export default function ArticleCard({
           {/* Category badge on image */}
           {categoryName && (
             <div className="absolute top-3 left-3 z-10">
-              <div className="flex items-center gap-1.5 rounded-full bg-black/70 px-3 py-1.5 text-xs font-medium text-white backdrop-blur-sm">
-                <TagIcon className="h-3 w-3" />
-                <span>{categoryName}</span>
-              </div>
+              <CategoryCard categoryName={categoryName} />
             </div>
           )}
         </div>
