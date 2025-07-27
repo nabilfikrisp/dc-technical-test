@@ -3,8 +3,6 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router";
 import "./index.css";
 import ArticleListPage from "./pages/articles/article-list.page";
-import { Provider } from "react-redux";
-import { store } from "./redux/store";
 import Layout from "./components/layout";
 import LoginPage from "./pages/auth/login.page";
 import LandingPage from "./pages/lading.page";
@@ -14,10 +12,25 @@ import AuthGuard from "./components/guards/auth-guard";
 import GuestGuard from "./components/guards/guest-guard";
 import ArticleDetailPage from "./pages/articles/article-detail.page";
 import { ThemeProvider } from "./components/theme-provider";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QUERY_STALE_TIME, REFETCH_ON_WINDOW_FOCUS } from "./lib/consts";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: REFETCH_ON_WINDOW_FOCUS,
+      retry: 1,
+      staleTime: QUERY_STALE_TIME,
+    },
+    mutations: {
+      retry: 1,
+    },
+  },
+});
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <Provider store={store}>
+    <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
         <BrowserRouter>
           <Routes>
@@ -38,6 +51,6 @@ createRoot(document.getElementById("root")!).render(
         </BrowserRouter>
         <Toaster closeButton richColors />
       </ThemeProvider>
-    </Provider>
+    </QueryClientProvider>
   </StrictMode>,
 );

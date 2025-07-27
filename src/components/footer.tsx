@@ -1,6 +1,14 @@
+import { articleQueryOptions } from "@/services/articles/queries";
+import { useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router";
 
 export default function Footer() {
+  const queryClient = useQueryClient();
+
+  function prefecthArticles() {
+    queryClient.prefetchQuery(articleQueryOptions());
+  }
+
   return (
     <footer className="bg-background border-border border-t py-6">
       <div className="mx-auto flex max-w-[1024px] flex-col items-center justify-between gap-2 px-5 md:flex-row">
@@ -15,10 +23,11 @@ export default function Footer() {
             Home
           </Link>
           <Link
-            to="/explore"
+            to="/articles"
             className="hover:text-primary text-foreground transition-colors"
+            onMouseEnter={prefecthArticles}
           >
-            Explore
+            Articles
           </Link>
         </nav>
       </div>

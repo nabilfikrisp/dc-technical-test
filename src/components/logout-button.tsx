@@ -1,11 +1,11 @@
-import useAuth from "@/hooks/api/use-auth";
 import { Button } from "./ui/button";
+import useAuthStore from "@/stores/auth.store";
 
 export default function LogoutButton() {
-  const { logout } = useAuth();
+  const clearAuth = useAuthStore((state) => state.clearAuth);
 
   function handleLogout() {
-    logout();
+    clearAuth();
   }
 
   return (
