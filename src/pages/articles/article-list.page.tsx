@@ -1,4 +1,4 @@
-import ArticleCard from "@/components/article-card";
+import ArticleCard from "@/components/articles/article-card";
 import ErrorUI from "@/components/error-ui";
 import LoadingUI from "@/components/loading-ui";
 import useArticles from "@/hooks/api/use-articles";
