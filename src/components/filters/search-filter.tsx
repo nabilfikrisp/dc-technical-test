@@ -11,8 +11,13 @@ export default function SearchFilter() {
   });
   const [localSearch, setLocalSearch] = useState(search);
 
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setSearch(localSearch);
+  }
+
   return (
-    <div className="flex items-center gap-1">
+    <form className="flex items-center gap-1" onSubmit={handleSubmit}>
       <div className="relative flex w-full max-w-[400px]">
         <Input
           className="border-border/50 bg-background/50 hover:border-border focus:border-primary focus:bg-background focus:shadow-primary/10 rounded-xl pr-10 backdrop-blur-sm transition-all duration-200 focus:shadow-lg"
@@ -26,14 +31,15 @@ export default function SearchFilter() {
             size="icon"
             variant="ghost"
             className="absolute top-1/2 right-2 z-10 -translate-y-1/2 hover:bg-transparent focus:bg-transparent"
+            type="button"
           >
             <XIcon className="h-4 w-4" />
           </Button>
         )}
       </div>
-      <Button onClick={() => setSearch(localSearch)} className="rounded-xl">
+      <Button type="submit" className="rounded-xl">
         <SearchIcon className="h-4 w-4" />
       </Button>
-    </div>
+    </form>
   );
 }

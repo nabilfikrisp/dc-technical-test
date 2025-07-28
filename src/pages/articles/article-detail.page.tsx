@@ -44,7 +44,7 @@ function ArticleDetail({ article }: { article: ArticleSchema }) {
 
         <ArticleContent content={article.description} />
 
-        {article.comments.length > 0 && (
+        {article.comments && (
           <CommentSection
             comments={article.comments}
             documentId={article.documentId}

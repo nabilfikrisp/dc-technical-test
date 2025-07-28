@@ -21,15 +21,14 @@ import useArticleFormStore from "@/stores/article-form.store";
 import CategorySelectField from "./category-select.field";
 import UploadFileField from "./upload-file.field";
 import { useNavigate } from "react-router";
+import { Loader2Icon } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function ArticleForm() {
   const navigate = useNavigate();
-
-  // Store and mutations
   const { formState, resetFormState, isUploading } = useArticleFormStore();
   const { mutateAsync, isPending } = usePostArticleMutation();
 
-  // Form setup
   const form = useForm<PostArticleSchema>({
     resolver: zodResolver(postArticleSchema),
     defaultValues: formState,
@@ -41,18 +40,20 @@ export default function ArticleForm() {
         title: values.title,
         description: values.description,
         cover_image_url: values.cover_image_url,
-        ...(values.categoryId && {
-          category: Number(values.categoryId),
-        }),
+        ...(values.categoryId && { category: Number(values.categoryId) }),
       };
 
       const response = await mutateAsync(requestBody);
 
-      toast.success("Article created successfully");
+      toast.success("Article published successfully", {
+        action: {
+          label: "View",
+          onClick: () => navigate(`/articles/${response.data.documentId}`),
+        },
+      });
+
       resetFormState();
       form.reset();
-
-      navigate(`/articles/${response.data.id}`);
     } catch (error) {
       toast.error(
         parseApiError({ error, fallback: "Failed to create article" }),
@@ -62,10 +63,13 @@ export default function ArticleForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+      <form
+        onSubmit={form.handleSubmit(handleSubmit)}
+        className="w-full space-y-5"
+      >
         {/* Cover Image Upload */}
         <FormItem>
-          <FormLabel>Cover Image</FormLabel>
+          <FormLabel className="text-base">Cover Image</FormLabel>
           <UploadFileField />
         </FormItem>
 
@@ -75,9 +79,13 @@ export default function ArticleForm() {
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Title</FormLabel>
+              <FormLabel className="text-base">Title</FormLabel>
               <FormControl>
-                <Input placeholder="Enter article title" {...field} />
+                <Input
+                  placeholder="Enter article title"
+                  className="h-12 text-base"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -90,9 +98,13 @@ export default function ArticleForm() {
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Description</FormLabel>
+              <FormLabel className="text-base">Description</FormLabel>
               <FormControl>
-                <Input placeholder="Enter article description" {...field} />
+                <Textarea
+                  placeholder="Enter article description"
+                  className="min-h-[120px] text-base"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -102,13 +114,33 @@ export default function ArticleForm() {
         {/* Category Selection */}
         <CategorySelectField />
 
-        <Button
-          type="submit"
-          disabled={isPending || isUploading}
-          className="w-full"
-        >
-          {isPending ? "Creating..." : "Create Article"}
-        </Button>
+        <div className="flex gap-4 pt-4">
+          <Button
+            type="button"
+            variant="outline"
+            className="flex-1"
+            onClick={() => {
+              resetFormState();
+              form.reset();
+            }}
+          >
+            Reset
+          </Button>
+          <Button
+            type="submit"
+            disabled={isPending || isUploading}
+            className="flex-1"
+          >
+            {isPending || isUploading ? (
+              <>
+                <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+                {isUploading ? "Uploading..." : "Publishing..."}
+              </>
+            ) : (
+              "Publish Article"
+            )}
+          </Button>
+        </div>
       </form>
     </Form>
   );
