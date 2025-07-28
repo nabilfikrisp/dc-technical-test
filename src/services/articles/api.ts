@@ -12,7 +12,7 @@ export interface FetchArticlesParams {
     pageSize?: number;
   };
   filters?: {
-    title?: { $contains?: string };
+    title?: { $containsi?: string };
     category?: { name?: { $eqi?: string } };
   };
   populate?: {

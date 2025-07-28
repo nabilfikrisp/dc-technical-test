@@ -16,7 +16,7 @@ export function ArticlesSection() {
   const paramsBuilder = {
     pagination: { pageSize: DEFAULT_ARTICLE_PARAMS.PAGE_SIZE },
     filters: {
-      title: searchParams ? { $contains: searchParams } : undefined,
+      title: searchParams ? { $containsi: searchParams } : undefined,
       category: categoryParams ? { name: { $eqi: categoryParams } } : undefined,
     },
     sort: sortByParams
