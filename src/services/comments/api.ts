@@ -17,7 +17,6 @@ export async function postComment(
     },
   };
 
-  console.log(formattedRequestBody, "TEST");
   const response = await api.post(`/api/comments`, formattedRequestBody);
   return response.data;
 }

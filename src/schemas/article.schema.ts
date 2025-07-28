@@ -19,4 +19,21 @@ export const articleSchema = z.object({
   localizations: z.array(z.unknown()),
 });
 
+export const postArticleSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  description: z.string().min(1, "Description is required"),
+  cover_image_url: z.string().optional(),
+  categoryId: z.string().optional(),
+});
+
+export const postArticleRequestBody = postArticleSchema
+  .omit({
+    categoryId: true,
+  })
+  .extend({
+    category: z.object({ id: z.number() }).nullable().optional(),
+  });
+
 export type ArticleSchema = z.infer<typeof articleSchema>;
+export type PostArticleSchema = z.infer<typeof postArticleSchema>;
+export type PostArticleRequestBody = z.infer<typeof postArticleRequestBody>;

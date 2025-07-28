@@ -1,6 +1,9 @@
 import api from "@/configs/axios.config";
 import type { ApiResponse, Meta } from "@/schemas/api.schema";
-import type { ArticleSchema } from "@/schemas/article.schema";
+import type {
+  ArticleSchema,
+  PostArticleRequestBody,
+} from "@/schemas/article.schema";
 import qs from "qs";
 
 export interface FetchArticlesParams {
@@ -58,6 +61,19 @@ export async function fetchArticleDetail(documentId: string) {
 
   const response = await api.get<ApiResponse<ArticleSchema, Meta>>(
     `/api/articles/${documentId}?${query}`,
+  );
+  return response.data;
+}
+
+export async function postArticle(requestBody: PostArticleRequestBody) {
+  const formattedRequestBody = {
+    data: {
+      ...requestBody,
+    },
+  };
+  const response = await api.post<ApiResponse<ArticleSchema>>(
+    "/api/articles",
+    formattedRequestBody,
   );
   return response.data;
 }

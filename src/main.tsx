@@ -15,6 +15,7 @@ import { ThemeProvider } from "./components/theme-provider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { QUERY_STALE_TIME, REFETCH_ON_WINDOW_FOCUS } from "./lib/consts";
 import { NuqsAdapter } from "nuqs/adapters/react-router/v7";
+import ArticleCreatePage from "./pages/articles/article-create.page";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -41,6 +42,7 @@ createRoot(document.getElementById("root")!).render(
                 <Route element={<AuthGuard />}>
                   <Route path="articles">
                     <Route index element={<ArticleListPage />} />
+                    <Route path="create" element={<ArticleCreatePage />} />
                     <Route path=":id" element={<ArticleDetailPage />} />
                   </Route>
                 </Route>
