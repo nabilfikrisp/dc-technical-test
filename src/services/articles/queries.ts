@@ -31,7 +31,10 @@ export function articleInfiniteQueryOptions({
     queryFn: ({ pageParam }) =>
       fetchArticles({
         ...params,
-        pagination: { pageSize: params?.pagination?.pageSize, page: pageParam },
+        pagination: {
+          pageSize: params?.pagination?.pageSize,
+          page: pageParam,
+        },
       }),
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {

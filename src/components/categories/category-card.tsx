@@ -1,27 +1,20 @@
 import { cn } from "@/lib/utils";
-import { useQueryState } from "nuqs";
 
 export default function CategoryCard({
   categoryName,
+  isActive,
+  onChange,
 }: {
   categoryName: string;
+  isActive?: boolean;
+  onChange?: (newCategory: string | null) => void;
 }) {
-  const [categoryParams, setCategoryParams] = useQueryState("category");
-
-  function handleClick() {
-    if (categoryParams === categoryName) {
-      setCategoryParams("");
-    } else {
-      setCategoryParams(categoryName);
-    }
-  }
-
   return (
     <div
-      onClick={handleClick}
+      onClick={() => onChange?.(isActive ? null : categoryName)}
       className={cn(
         "bg-background/70 text-foreground flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium backdrop-blur-sm transition-all hover:translate-y-0.5 hover:cursor-pointer",
-        categoryParams === categoryName
+        isActive
           ? "border-primary text-primary"
           : "border-border/50 text-muted-foreground hover:border-primary",
       )}

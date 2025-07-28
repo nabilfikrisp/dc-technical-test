@@ -1,12 +1,24 @@
-import { articleQueryOptions } from "@/services/articles/queries";
+import { articleInfiniteQueryOptions } from "@/services/articles/queries";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router";
+
+const DEFAULT_PAGE_SIZE = 3;
 
 export default function Footer() {
   const queryClient = useQueryClient();
 
   function prefecthArticles() {
-    queryClient.prefetchQuery(articleQueryOptions());
+    queryClient.prefetchInfiniteQuery(
+      articleInfiniteQueryOptions({
+        params: {
+          pagination: { pageSize: DEFAULT_PAGE_SIZE },
+          filters: {
+            title: undefined,
+            category: undefined,
+          },
+        },
+      }),
+    );
   }
 
   return (

@@ -1,14 +1,14 @@
 import ArticleList from "@/components/articles/article-list";
-import CategoryList from "@/components/articles/category-list";
+import FiltersDrawer from "@/components/articles/filters-drawer";
 import ErrorUI from "@/components/error-ui";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { articleInfiniteQueryOptions } from "@/services/articles/queries";
-import { categoryQueryOptions } from "@/services/categories/queries";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { SearchIcon, XIcon } from "lucide-react";
 import { useQueryState } from "nuqs";
+import CategoriesSection from "@/components/categories/categories-section";
 
 const DEFAULT_PAGE_SIZE = 3;
 
@@ -17,12 +17,13 @@ export default function ArticleListPage() {
     <div className="mx-auto w-full max-w-[1024px] flex-1 px-5 py-10">
       <div className="mb-5 flex gap-5">
         <SearchFilter />
+        <FiltersDrawer className="block flex-1 rounded-xl md:hidden" />
       </div>
       <div className="grid grid-cols-3 gap-5">
         <div className="col-span-3 md:col-span-2">
           <ArticlesSection />
         </div>
-        <div className="col-span-3 md:col-span-1">
+        <div className="col-span-1 hidden md:block">
           <CategoriesSection />
         </div>
       </div>
@@ -120,28 +121,4 @@ function ArticlesSkeleton() {
       ))}
     </div>
   );
-}
-
-function CategoriesSection() {
-  const { data: categoryResponse, error: categoryError } = useQuery(
-    categoryQueryOptions(),
-  );
-
-  if (categoryError) {
-    return <ErrorUI error={categoryError} />;
-  }
-
-  if (!categoryResponse) {
-    return <CategoriesSkeleton />;
-  }
-
-  return (
-    <section className="sticky top-[80px] max-h-[calc(100vh-2rem)] overflow-y-auto">
-      <CategoryList categories={categoryResponse.data} />
-    </section>
-  );
-}
-
-function CategoriesSkeleton() {
-  return <Skeleton className="h-[375px] animate-pulse rounded-xl" />;
 }

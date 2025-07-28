@@ -12,7 +12,7 @@ import {
 import { Separator } from "../ui/separator";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router";
-import CategoryCard from "./category-card";
+import CategoryCard from "../categories/category-card";
 
 type ArticleCardProps = {
   article: ArticleSchema;
@@ -27,7 +27,7 @@ export default function ArticleCard({
 
   const authorName = article.user?.username || "Unknown Author";
   const relativeTime = formatDistanceToNow(new Date(article.publishedAt), {
-    addSuffix: true,
+    addSuffix: false,
     locale: id,
   });
 
@@ -64,7 +64,7 @@ export default function ArticleCard({
       {/* Content Section */}
       <div className="flex flex-1 flex-col gap-4 p-5">
         {/* Header with author and time */}
-        <div className="flex items-center gap-3 text-sm">
+        <div className="flex flex-wrap items-center gap-3 text-sm">
           <div className="text-muted-foreground/80 group-hover:text-muted-foreground flex items-center gap-1.5 transition-colors">
             <div className="bg-muted/50 flex h-6 w-6 items-center justify-center rounded-full">
               <UserIcon className="h-3.5 w-3.5" />

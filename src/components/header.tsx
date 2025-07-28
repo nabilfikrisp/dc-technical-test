@@ -5,8 +5,10 @@ import LogoutButton from "./logout-button";
 import { ThemeToggle } from "./theme-toggle";
 import useAuthStore from "@/stores/auth.store";
 
-import { articleQueryOptions } from "@/services/articles/queries";
+import { articleInfiniteQueryOptions } from "@/services/articles/queries";
 import { useQueryClient } from "@tanstack/react-query";
+
+const DEFAULT_PAGE_SIZE = 3;
 
 export default function Header() {
   const queryClient = useQueryClient();
@@ -28,7 +30,17 @@ export default function Header() {
   }
 
   function prefecthArticles() {
-    queryClient.prefetchQuery(articleQueryOptions());
+    queryClient.prefetchInfiniteQuery(
+      articleInfiniteQueryOptions({
+        params: {
+          pagination: { pageSize: DEFAULT_PAGE_SIZE },
+          filters: {
+            title: undefined,
+            category: undefined,
+          },
+        },
+      }),
+    );
   }
 
   return (
