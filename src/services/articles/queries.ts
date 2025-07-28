@@ -33,7 +33,7 @@ export function articleInfiniteQueryOptions({
         ...params,
         pagination: { pageSize: params?.pagination?.pageSize, page: pageParam },
       }),
-    initialPageParam: params?.pagination?.page ?? 1,
+    initialPageParam: 1,
     getNextPageParam: (lastPage) => {
       const nextPage = lastPage.meta.pagination.page + 1;
       const hasNextPage = nextPage <= lastPage.meta.pagination.pageCount;

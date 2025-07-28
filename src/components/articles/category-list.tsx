@@ -8,7 +8,7 @@ export default function CategoryList({
   categories: CategorySchema[];
 }) {
   return (
-    <div className="rounded-lg border p-4">
+    <div className="border-border/50 rounded-xl border p-4">
       <h2 className="text-lg font-semibold">Categories</h2>
       <Separator className="my-2" />
       <div className="flex flex-wrap gap-2">
