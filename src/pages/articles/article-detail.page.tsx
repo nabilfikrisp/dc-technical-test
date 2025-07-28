@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 import { articleDetailQueryOptions } from "@/services/articles/queries";
 import ErrorUI from "@/components/error-ui";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,7 @@ import CommentSection from "@/components/comments/comment-section";
 import useAuthStore from "@/stores/auth.store";
 import ArticleDeleteDialog from "@/components/articles/article-delete-dialog";
 import { useState } from "react";
+import { useGoBack } from "@/hooks/use-go-back";
 
 export default function ArticleDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -110,16 +111,15 @@ function ArticleHeader({
 }
 
 function BackButton() {
+  const goBack = useGoBack("/articles");
   return (
     <Button
-      asChild
       variant="ghost"
       className="group text-muted-foreground hover:text-foreground -ml-3 gap-1.5"
+      onClick={goBack}
     >
-      <Link to="/articles">
-        <ArrowLeftIcon className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
-        Back to Articles
-      </Link>
+      <ArrowLeftIcon className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+      Back
     </Button>
   );
 }
@@ -158,16 +158,14 @@ function ArticleContent({ content }: { content: string }) {
 }
 
 function AuthorActions({ documentId }: { documentId: string }) {
-  const navigate = useNavigate();
+  const goBack = useGoBack("/articles");
+
   return (
     <div className="flex gap-2">
       <Button asChild variant="outline">
         <Link to={`/articles/${documentId}/edit`}>Edit</Link>
       </Button>
-      <ArticleDeleteDialog
-        documentId={documentId}
-        onSuccess={() => navigate("/articles")}
-      />
+      <ArticleDeleteDialog documentId={documentId} onSuccess={goBack} />
     </div>
   );
 }

@@ -17,6 +17,7 @@ import { QUERY_STALE_TIME, REFETCH_ON_WINDOW_FOCUS } from "./lib/consts";
 import { NuqsAdapter } from "nuqs/adapters/react-router/v7";
 import ArticleCreatePage from "./pages/articles/article-create.page";
 import ArticleEditPage from "./pages/articles/article-edit.page";
+import MePage from "./pages/auth/me.page";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -47,6 +48,7 @@ createRoot(document.getElementById("root")!).render(
                     <Route path=":id" element={<ArticleDetailPage />} />
                     <Route path=":id/edit" element={<ArticleEditPage />} />
                   </Route>
+                  <Route path="me" element={<MePage />} />
                 </Route>
                 <Route element={<GuestGuard />}>
                   <Route path="login" element={<LoginPage />} />

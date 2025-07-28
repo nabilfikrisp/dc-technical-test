@@ -1,18 +1,19 @@
 import ArticleForm from "@/components/forms/article/article.form";
 import { Button } from "@/components/ui/button";
+import { useGoBack } from "@/hooks/use-go-back";
 import { articleDetailQueryOptions } from "@/services/articles/queries";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeftIcon } from "lucide-react";
-import { useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 
 export default function ArticleEditPage() {
   const { id } = useParams<{ id: string }>();
+  const goBack = useGoBack("/articles/" + id);
   const {
     data: response,
     error,
     isLoading,
   } = useQuery(articleDetailQueryOptions(id!));
-  const navigate = useNavigate();
 
   if (error) return <div>Error loading article</div>;
   if (isLoading || !response) return <div>Loading...</div>;
@@ -30,7 +31,7 @@ export default function ArticleEditPage() {
       <Button
         variant="ghost"
         className="text-muted-foreground hover:text-foreground gap-2 px-0"
-        onClick={() => navigate(-1)}
+        onClick={goBack}
       >
         <ArrowLeftIcon className="h-4 w-4" />
         Back
