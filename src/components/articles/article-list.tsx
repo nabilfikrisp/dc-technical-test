@@ -13,7 +13,7 @@ export default function ArticleList({
   }
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex w-full flex-col gap-5">
       {articles.map((article) => (
         <ArticleCard key={article.id} article={article} />
       ))}

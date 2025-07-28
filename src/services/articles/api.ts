@@ -10,7 +10,7 @@ export interface FetchArticlesParams {
   };
   filters?: {
     title?: { $contains?: string };
-    category?: { name?: { $contains?: string } };
+    category?: { name?: { $eqi?: string } };
   };
   populate?: {
     comments?: {
