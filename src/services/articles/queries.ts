@@ -1,6 +1,10 @@
 import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
-import { ARTICLE_LIST_QUERY_KEY } from "./keys";
-import { fetchArticles, type FetchArticlesParams } from "./api";
+import { ARTICLE_DETAIL_QUERY_KEY, ARTICLE_LIST_QUERY_KEY } from "./keys";
+import {
+  fetchArticleDetail,
+  fetchArticles,
+  type FetchArticlesParams,
+} from "./api";
 
 type ArticleQueryOptions = {
   params?: FetchArticlesParams;
@@ -42,5 +46,14 @@ export function articleInfiniteQueryOptions({
       const hasNextPage = nextPage <= lastPage.meta.pagination.pageCount;
       return hasNextPage ? nextPage : undefined;
     },
+  });
+}
+
+export function articleDetailQueryOptions(documentId?: string) {
+  return queryOptions({
+    queryKey: [ARTICLE_DETAIL_QUERY_KEY, documentId],
+    queryFn: () =>
+      documentId ? fetchArticleDetail(documentId) : Promise.resolve(null),
+    enabled: !!documentId,
   });
 }

@@ -7,8 +7,7 @@ import useAuthStore from "@/stores/auth.store";
 
 import { articleInfiniteQueryOptions } from "@/services/articles/queries";
 import { useQueryClient } from "@tanstack/react-query";
-
-const DEFAULT_PAGE_SIZE = 3;
+import { DEFAULT_ARTICLE_PARAMS } from "@/services/articles/default-params";
 
 export default function Header() {
   const queryClient = useQueryClient();
@@ -33,7 +32,7 @@ export default function Header() {
     queryClient.prefetchInfiniteQuery(
       articleInfiniteQueryOptions({
         params: {
-          pagination: { pageSize: DEFAULT_PAGE_SIZE },
+          pagination: { pageSize: DEFAULT_ARTICLE_PARAMS.PAGE_SIZE },
           filters: {
             title: undefined,
             category: undefined,

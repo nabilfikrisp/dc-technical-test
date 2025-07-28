@@ -44,3 +44,20 @@ export async function fetchArticles(params: FetchArticlesParams = {}) {
   );
   return response.data;
 }
+
+export async function fetchArticleDetail(documentId: string) {
+  const params = {
+    populate: {
+      comments: { populate: { user: "*" } },
+      user: "*",
+      category: "*",
+    },
+  };
+
+  const query = qs.stringify(params, { encodeValuesOnly: true, encode: false });
+
+  const response = await api.get<ApiResponse<ArticleSchema, Meta>>(
+    `/api/articles/${documentId}?${query}`,
+  );
+  return response.data;
+}

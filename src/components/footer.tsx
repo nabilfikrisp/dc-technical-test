@@ -1,8 +1,7 @@
+import { DEFAULT_ARTICLE_PARAMS } from "@/services/articles/default-params";
 import { articleInfiniteQueryOptions } from "@/services/articles/queries";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router";
-
-const DEFAULT_PAGE_SIZE = 3;
 
 export default function Footer() {
   const queryClient = useQueryClient();
@@ -11,7 +10,7 @@ export default function Footer() {
     queryClient.prefetchInfiniteQuery(
       articleInfiniteQueryOptions({
         params: {
-          pagination: { pageSize: DEFAULT_PAGE_SIZE },
+          pagination: { pageSize: DEFAULT_ARTICLE_PARAMS.PAGE_SIZE },
           filters: {
             title: undefined,
             category: undefined,
