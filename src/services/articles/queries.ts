@@ -49,11 +49,9 @@ export function articleInfiniteQueryOptions({
   });
 }
 
-export function articleDetailQueryOptions(documentId?: string) {
+export function articleDetailQueryOptions(documentId: string) {
   return queryOptions({
     queryKey: [ARTICLE_DETAIL_QUERY_KEY, documentId],
-    queryFn: () =>
-      documentId ? fetchArticleDetail(documentId) : Promise.resolve(null),
-    enabled: !!documentId,
+    queryFn: () => fetchArticleDetail(documentId),
   });
 }

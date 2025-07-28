@@ -12,4 +12,13 @@ export const commentSchema = z.object({
   user: userSchema.optional(),
 });
 
+export const postCommentSchema = z.object({
+  articleId: z.number(),
+  content: z
+    .string()
+    .min(1, "Content cannot be empty")
+    .max(500, "Content cannot exceed 500 characters"),
+});
+
 export type CommentSchema = z.infer<typeof commentSchema>;
+export type PostCommentSchema = z.infer<typeof postCommentSchema>;
