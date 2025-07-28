@@ -22,8 +22,13 @@ export async function fetchRegister(body: RegisterSchema) {
 }
 
 type FetchMeParams = {
-  populate: { articles: FetchArticlesParams; categories?: "*" };
+  populate: {
+    articles: FetchArticlesParams;
+    categories?: "*";
+    comments?: { populate: "article" };
+  };
 };
+
 export async function fetchMe() {
   const params: FetchMeParams = {
     populate: {

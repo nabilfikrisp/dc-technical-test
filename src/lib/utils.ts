@@ -68,3 +68,7 @@ export function formatDate(dateString: string): string {
     day: "numeric",
   });
 }
+
+export function isNotNull<T>(value: T | null | undefined): value is T {
+  return value !== null && value !== undefined;
+}
