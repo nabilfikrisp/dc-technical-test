@@ -1,7 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { POST_COMMENT_MUTATION_KEY } from "./keys";
-import { postComment } from "./api";
+import { DELETE_COMMENT_MUTATION_KEY, POST_COMMENT_MUTATION_KEY } from "./keys";
+import { fetchDeleteComment, postComment } from "./api";
 import { articleDetailQueryOptions } from "../articles/queries";
+import { meQueryOptions } from "../auth/queries";
 
 export function usePostCommentMutation({ documentId }: { documentId: string }) {
   const queryClient = useQueryClient();
@@ -12,6 +13,19 @@ export function usePostCommentMutation({ documentId }: { documentId: string }) {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: articleDetailQueryOptions(documentId).queryKey,
+      });
+    },
+  });
+}
+
+export function useDeleteCommentMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: [DELETE_COMMENT_MUTATION_KEY],
+    mutationFn: (documentId: string) => fetchDeleteComment(documentId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: meQueryOptions().queryKey,
       });
     },
   });

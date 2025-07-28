@@ -13,6 +13,7 @@ import { Link } from "react-router";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { CommentWithArticleSchema } from "@/schemas/user.schema";
 import { useQueryState } from "nuqs";
+import CommentDeleteDialog from "@/components/comments/comment-delete-dialog";
 
 function filterValidArticles(data: ArticleSchema[]): ArticleSchema[] {
   // no null published articles
@@ -115,20 +116,24 @@ function MyComments({ comments }: { comments: CommentWithArticleSchema[] }) {
             <div key={comment.id} className="space-y-2 rounded-lg border p-4">
               <p className="text-sm">{comment.content}</p>
 
-              <div className="text-muted-foreground flex items-center justify-between text-xs">
+              <div className="text-muted-foreground flex items-center justify-start text-xs">
                 <span>
                   on:
                   {comment.article ? comment.article.title : "deleted article"}
                 </span>
-                {comment.article && (
-                  <Link
-                    to={`/articles/${comment.article.documentId}`}
-                    className="flex items-center gap-1 text-blue-500 hover:underline"
-                  >
-                    View Article
-                    <ExternalLinkIcon className="h-4 w-4" />
-                  </Link>
-                )}
+                <div className="ml-auto flex items-center gap-2">
+                  {comment.article && (
+                    <Button variant="outline" size="icon" asChild>
+                      <Link
+                        to={`/articles/${comment.article.documentId}`}
+                        className="flex items-center gap-1 text-blue-500 hover:underline"
+                      >
+                        <ExternalLinkIcon className="h-4 w-4" />
+                      </Link>
+                    </Button>
+                  )}
+                  <CommentDeleteDialog documentId={comment.documentId} />
+                </div>
               </div>
             </div>
           ))}
