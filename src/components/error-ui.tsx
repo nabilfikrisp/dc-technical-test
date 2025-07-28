@@ -1,4 +1,5 @@
 import { parseApiError } from "@/lib/utils";
+import { AlertCircleIcon } from "lucide-react";
 
 type ErrorUIProps = {
   error: unknown;
@@ -11,7 +12,9 @@ export default function ErrorUI({ error, message }: ErrorUIProps) {
   });
   return (
     <div className="flex flex-col items-center justify-center py-24">
-      <div className="mb-4 text-5xl text-red-400">⚠️</div>
+      <div className="mb-4 text-5xl text-red-400">
+        <AlertCircleIcon className="h-10 w-10" />
+      </div>
       <p className="mb-2 text-lg font-semibold text-red-500">
         {message || "Error"}
       </p>
