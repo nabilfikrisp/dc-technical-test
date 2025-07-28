@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { articleSchema } from "./article.schema";
+import { commentSchema } from "./comment.schema";
 
 export const userSchema = z.object({
   id: z.string(),
@@ -16,8 +17,16 @@ export const userSchema = z.object({
   locale: z.nullable(z.string()),
 });
 
+export const commentWithArticleSchema = z.lazy(() =>
+  commentSchema.extend({
+    article: articleSchema.omit({ user: true, comments: true }).nullable(),
+  }),
+);
+
 export const meSchema = userSchema.extend({
   articles: z.array(z.lazy(() => articleSchema.omit({ user: true }))),
+  comments: z.array(commentWithArticleSchema),
 });
-export type UserSchema = z.infer<typeof userSchema>;
 export type MeSchema = z.infer<typeof meSchema>;
+export type UserSchema = z.infer<typeof userSchema>;
+export type CommentWithArticleSchema = z.infer<typeof commentWithArticleSchema>;

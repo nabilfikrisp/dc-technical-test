@@ -43,7 +43,9 @@ export async function fetchMe() {
         },
         sort: "publishedAt:asc",
       },
-      // categories: "*",
+      comments: {
+        populate: "article",
+      },
     },
   };
   const queryString = qs.stringify(params, {
