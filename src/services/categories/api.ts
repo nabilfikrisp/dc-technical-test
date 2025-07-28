@@ -21,3 +21,8 @@ export async function fetchPostCategory(name: string) {
   );
   return response.data;
 }
+
+export async function fetchDeleteCategory(documentId: string) {
+  const response = await api.delete(`/api/categories/${documentId}`);
+  return response.data;
+}

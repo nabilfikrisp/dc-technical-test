@@ -21,7 +21,9 @@ export default function CategoryCreateDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className={className}>New Category</Button>
+        <Button className={className} size="sm">
+          New Category
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
