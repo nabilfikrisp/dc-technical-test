@@ -10,6 +10,20 @@ import { DEFAULT_ARTICLE_PARAMS } from "@/services/articles/default-params";
 export function ArticlesSection() {
   const [searchParams] = useQueryState("search");
   const [categoryParams] = useQueryState("category");
+  const [sortByParams] = useQueryState("sortBy");
+  const [sortOrderParams] = useQueryState("sortOrder");
+
+  const paramsBuilder = {
+    pagination: { pageSize: DEFAULT_ARTICLE_PARAMS.PAGE_SIZE },
+    filters: {
+      title: searchParams ? { $contains: searchParams } : undefined,
+      category: categoryParams ? { name: { $eqi: categoryParams } } : undefined,
+    },
+    sort: sortByParams
+      ? `${sortByParams}:${sortOrderParams || "desc"}`
+      : undefined,
+  };
+
   const {
     data: articleResponse,
     error: articleError,
@@ -18,15 +32,7 @@ export function ArticlesSection() {
     isFetchingNextPage,
   } = useInfiniteQuery(
     articleInfiniteQueryOptions({
-      params: {
-        pagination: { pageSize: DEFAULT_ARTICLE_PARAMS.PAGE_SIZE },
-        filters: {
-          title: searchParams ? { $contains: searchParams } : undefined,
-          category: categoryParams
-            ? { name: { $eqi: categoryParams } }
-            : undefined,
-        },
-      },
+      params: paramsBuilder,
     }),
   );
 

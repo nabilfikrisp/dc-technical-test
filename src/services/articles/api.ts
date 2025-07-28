@@ -24,6 +24,7 @@ export interface FetchArticlesParams {
     user?: "*";
     category?: "*";
   };
+  sort?: string | string[] | Record<string, "asc" | "desc">;
 }
 
 export async function fetchArticles(params: FetchArticlesParams = {}) {
@@ -35,10 +36,11 @@ export async function fetchArticles(params: FetchArticlesParams = {}) {
       user: "*",
       category: "*",
     },
+    sort,
   } = params;
 
   const query = qs.stringify(
-    { pagination, filters, populate },
+    { pagination, filters, populate, sort },
     { encodeValuesOnly: true, encode: false },
   );
 
@@ -94,5 +96,10 @@ export async function putArticle({
     `/api/articles/${documentId}`,
     formattedRequestBody,
   );
+  return response.data;
+}
+
+export async function deleteArticle(documentId: string) {
+  const response = await api.delete(`/api/articles/${documentId}`);
   return response.data;
 }

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { articleDetailQueryOptions } from "@/services/articles/queries";
 import ErrorUI from "@/components/error-ui";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,8 @@ import { formatDate } from "@/lib/utils";
 import ArticleDetailSkeleton from "@/components/articles/article-detail-skeleton";
 import CommentSection from "@/components/comments/comment-section";
 import useAuthStore from "@/stores/auth.store";
+import ArticleDeleteDialog from "@/components/articles/article-delete-dialog";
+import { useState } from "react";
 
 export default function ArticleDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -26,7 +28,9 @@ export default function ArticleDetailPage() {
 
 function ArticleDetail({ article }: { article: ArticleSchema }) {
   const { user } = useAuthStore();
+  const [imageError, setImageError] = useState(false);
 
+  const showImage = article.cover_image_url && !imageError;
   const isAuthor = user!.id === article.user!.id;
 
   return (
@@ -42,13 +46,17 @@ function ArticleDetail({ article }: { article: ArticleSchema }) {
           <UserInfo name={article.user.username} isAuthor={isAuthor} />
         )}
 
-        {isAuthor && <AuthorActions article={article} />}
+        {isAuthor && <AuthorActions documentId={article.documentId} />}
 
-        {article.cover_image_url && (
-          <ArticleCoverImage
-            src={article.cover_image_url}
-            alt={article.title}
-          />
+        {showImage && (
+          <div className="overflow-hidden rounded-xl shadow-lg">
+            <ImageWithBackdrop
+              alt="Article cover image"
+              src={article.cover_image_url}
+              className="w-full object-cover"
+              onError={() => setImageError(true)}
+            />
+          </div>
         )}
 
         <ArticleContent content={article.description} />
@@ -137,14 +145,6 @@ function UserInfo({ name, isAuthor }: { name: string; isAuthor: boolean }) {
   );
 }
 
-function ArticleCoverImage({ src, alt }: { src: string; alt: string }) {
-  return (
-    <div className="overflow-hidden rounded-xl shadow-lg">
-      <ImageWithBackdrop alt={alt} src={src} className="w-full object-cover" />
-    </div>
-  );
-}
-
 function ArticleContent({ content }: { content: string }) {
   return (
     <article className="prose prose-sm dark:prose-invert sm:prose-base lg:prose-lg max-w-none">
@@ -157,15 +157,17 @@ function ArticleContent({ content }: { content: string }) {
   );
 }
 
-function AuthorActions({ article }: { article: ArticleSchema }) {
+function AuthorActions({ documentId }: { documentId: string }) {
+  const navigate = useNavigate();
   return (
     <div className="flex gap-2">
       <Button asChild variant="outline">
-        <Link to={`/articles/${article.documentId}/edit`}>Edit</Link>
+        <Link to={`/articles/${documentId}/edit`}>Edit</Link>
       </Button>
-      <Button asChild variant="destructive">
-        <Link to={`/articles/delete/${article.documentId}`}>Delete</Link>
-      </Button>
+      <ArticleDeleteDialog
+        documentId={documentId}
+        onSuccess={() => navigate("/articles")}
+      />
     </div>
   );
 }

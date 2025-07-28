@@ -27,7 +27,10 @@ export default function SearchFilter() {
         />
         {search && (
           <Button
-            onClick={() => setSearch("")}
+            onClick={() => {
+              setSearch("");
+              setLocalSearch("");
+            }}
             size="icon"
             variant="ghost"
             className="absolute top-1/2 right-2 z-10 -translate-y-1/2 hover:bg-transparent focus:bg-transparent"

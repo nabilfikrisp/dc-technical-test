@@ -10,6 +10,9 @@ import {
   DrawerTrigger,
 } from "../ui/drawer";
 import CategoriesSection from "../categories/categories-section";
+import SortFilter from "./sort-filter";
+import ResetFilter from "./reset-filter";
+import { Separator } from "../ui/separator";
 
 type FiltersDrawerProps = {
   className?: string;
@@ -25,7 +28,17 @@ export default function FiltersDrawer({ className }: FiltersDrawerProps) {
         <DrawerHeader>
           <DrawerTitle className="text-xl">Filters</DrawerTitle>
         </DrawerHeader>
-        <CategoriesSection />
+
+        <div className="flex flex-col gap-5">
+          <CategoriesSection />
+          <div className="px-5">
+            <h2 className="text-lg font-semibold">Sort</h2>
+            <Separator className="my-2" />
+            <SortFilter />
+          </div>
+          <ResetFilter className="mx-5" />
+        </div>
+
         <DrawerFooter>
           <DrawerClose asChild>
             <Button variant="outline">Close</Button>

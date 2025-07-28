@@ -11,21 +11,25 @@ export function parseApiError({
   fallback = "Something went wrong",
 }: {
   error: unknown;
-  fallback: string;
+  fallback?: string;
 }): string {
-  if (axios.isAxiosError(error)) {
-    const message = error.response?.data?.error?.message;
-
-    if (typeof message === "string") {
-      return message;
-    }
+  if (!axios.isAxiosError(error)) {
+    return error instanceof Error ? error.message : fallback;
   }
 
-  if (error instanceof Error) {
-    return error.message;
+  const strapiError = error.response?.data?.error;
+  if (!strapiError) {
+    return error.response?.data?.message || fallback;
   }
 
-  return fallback;
+  const firstValidationError = strapiError.details?.errors?.[0];
+  if (firstValidationError) {
+    return firstValidationError.path
+      ? `${firstValidationError.path.join(".")}: ${firstValidationError.message}`
+      : firstValidationError.message;
+  }
+
+  return strapiError.message || fallback;
 }
 
 export function getLocalStorageItem<T>(key: string): T | null {

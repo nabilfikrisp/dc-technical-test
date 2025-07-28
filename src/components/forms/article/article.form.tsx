@@ -148,7 +148,9 @@ export default function ArticleForm({ initialValues }: ArticleFormProps) {
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-base">Title</FormLabel>
+              <FormLabel className="text-base">
+                Title <span className="text-red-500">*</span>
+              </FormLabel>
               <FormControl>
                 <Input
                   placeholder="Enter article title"
@@ -167,7 +169,9 @@ export default function ArticleForm({ initialValues }: ArticleFormProps) {
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-base">Description</FormLabel>
+              <FormLabel className="text-base">
+                Description<span className="text-red-500">*</span>
+              </FormLabel>
               <FormControl>
                 <Textarea
                   placeholder="Enter article description"
