@@ -14,6 +14,7 @@ import ArticleDetailPage from "./pages/articles/article-detail.page";
 import { ThemeProvider } from "./components/theme-provider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { QUERY_STALE_TIME, REFETCH_ON_WINDOW_FOCUS } from "./lib/consts";
+import { NuqsAdapter } from "nuqs/adapters/react-router/v7";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -31,26 +32,28 @@ const queryClient = new QueryClient({
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-        <BrowserRouter>
-          <Routes>
-            <Route element={<Layout />}>
-              <Route index element={<LandingPage />} />
-              <Route element={<AuthGuard />}>
-                <Route path="articles">
-                  <Route index element={<ArticleListPage />} />
-                  <Route path=":id" element={<ArticleDetailPage />} />
+      <NuqsAdapter>
+        <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+          <BrowserRouter>
+            <Routes>
+              <Route element={<Layout />}>
+                <Route index element={<LandingPage />} />
+                <Route element={<AuthGuard />}>
+                  <Route path="articles">
+                    <Route index element={<ArticleListPage />} />
+                    <Route path=":id" element={<ArticleDetailPage />} />
+                  </Route>
+                </Route>
+                <Route element={<GuestGuard />}>
+                  <Route path="login" element={<LoginPage />} />
+                  <Route path="register" element={<RegisterPage />} />
                 </Route>
               </Route>
-              <Route element={<GuestGuard />}>
-                <Route path="login" element={<LoginPage />} />
-                <Route path="register" element={<RegisterPage />} />
-              </Route>
-            </Route>
-          </Routes>
-        </BrowserRouter>
-        <Toaster closeButton richColors />
-      </ThemeProvider>
+            </Routes>
+          </BrowserRouter>
+          <Toaster closeButton richColors />
+        </ThemeProvider>
+      </NuqsAdapter>
     </QueryClientProvider>
   </StrictMode>,
 );
