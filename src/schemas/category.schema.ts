@@ -11,4 +11,9 @@ export const categorySchema = z.object({
   locale: z.string().nullable(),
 });
 
+export const createCategorySchema = z.object({
+  name: z.string().min(1, "Name is required"),
+});
+
 export type CategorySchema = z.infer<typeof categorySchema>;
+export type CreateCategorySchema = z.infer<typeof createCategorySchema>;

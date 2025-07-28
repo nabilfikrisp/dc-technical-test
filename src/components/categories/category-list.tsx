@@ -2,6 +2,7 @@ import type { CategorySchema } from "@/schemas/category.schema";
 import { Separator } from "../ui/separator";
 import CategoryCard from "./category-card";
 import { useQueryState } from "nuqs";
+import CategoryCreateDialog from "./category-create-dialog";
 
 export default function CategoryList({
   categories,
@@ -16,7 +17,10 @@ export default function CategoryList({
 
   return (
     <div className="border-border/50 rounded-xl border p-4">
-      <h2 className="text-lg font-semibold">Categories</h2>
+      <div className="flex items-center gap-5">
+        <h2 className="text-lg font-semibold">Categories</h2>
+        <CategoryCreateDialog className="ml-auto" />
+      </div>
       <Separator className="my-2" />
       <div className="flex flex-wrap gap-2">
         {categories.map((category) => (
