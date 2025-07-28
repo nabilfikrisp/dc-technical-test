@@ -15,28 +15,60 @@ import {
 import { Input } from "../../ui/input";
 import { Button } from "../../ui/button";
 import { toast } from "sonner";
-import { usePostArticleMutation } from "@/services/articles/mutations";
+import {
+  usePostArticleMutation,
+  usePutArticleMutation,
+} from "@/services/articles/mutations";
 import { parseApiError } from "@/lib/utils";
 import useArticleFormStore from "@/stores/article-form.store";
 import CategorySelectField from "./category-select.field";
-import UploadFileField from "./upload-file.field";
+import UploadFileField from "../upload-file";
 import { useNavigate } from "react-router";
 import { Loader2Icon } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
+import { useEffect } from "react";
+
+const resetFormState: PostArticleSchema = {
+  title: "",
+  description: "",
+  cover_image_url: "",
+  categoryId: undefined,
+};
 
 // initial value for edit
 type ArticleFormProps = {
-  initialValues?: PostArticleSchema;
+  initialValues?: PostArticleSchema & {
+    documentId: string;
+  };
 };
+
 export default function ArticleForm({ initialValues }: ArticleFormProps) {
   const navigate = useNavigate();
-  const { formState, resetFormState, isUploading } = useArticleFormStore();
-  const { mutateAsync, isPending } = usePostArticleMutation();
+  const { formState, isUploading, setIsUploading, updateField, setFormState } =
+    useArticleFormStore();
+  const { mutateAsync: postArticle, isPending: isPostPending } =
+    usePostArticleMutation();
+  const { mutateAsync: putArticle, isPending: isPutPending } =
+    usePutArticleMutation();
+
+  const isEditMode = Boolean(initialValues);
 
   const form = useForm<PostArticleSchema>({
     resolver: zodResolver(postArticleSchema),
     defaultValues: initialValues || formState,
   });
+
+  const coverImageUrl = form.watch("cover_image_url");
+
+  function handleReset() {
+    setFormState(resetFormState);
+    setIsUploading(false);
+    if (isEditMode) {
+      form.reset(initialValues);
+    } else {
+      form.reset(resetFormState);
+    }
+  }
 
   async function handleSubmit(values: PostArticleSchema) {
     try {
@@ -47,7 +79,15 @@ export default function ArticleForm({ initialValues }: ArticleFormProps) {
         ...(values.categoryId && { category: Number(values.categoryId) }),
       };
 
-      const response = await mutateAsync(requestBody);
+      let response;
+      if (isEditMode) {
+        response = await putArticle({
+          documentId: initialValues!.documentId,
+          requestBody,
+        });
+      } else {
+        response = await postArticle(requestBody);
+      }
 
       toast.success("Article published successfully", {
         action: {
@@ -56,14 +96,22 @@ export default function ArticleForm({ initialValues }: ArticleFormProps) {
         },
       });
 
-      resetFormState();
-      form.reset();
+      handleReset();
     } catch (error) {
       toast.error(
         parseApiError({ error, fallback: "Failed to create article" }),
       );
     }
   }
+
+  useEffect(() => {
+    if (!isEditMode) {
+      const subscription = form.watch((values) => {
+        setFormState(values as PostArticleSchema);
+      });
+      return () => subscription.unsubscribe();
+    }
+  }, [form, setFormState, isEditMode]);
 
   return (
     <Form {...form}>
@@ -74,7 +122,24 @@ export default function ArticleForm({ initialValues }: ArticleFormProps) {
         {/* Cover Image Upload */}
         <FormItem>
           <FormLabel className="text-base">Cover Image</FormLabel>
-          <UploadFileField initialValue={initialValues?.cover_image_url} />
+          <UploadFileField
+            key={isEditMode ? undefined : coverImageUrl}
+            initialValue={coverImageUrl}
+            onUploadSuccess={(url) => {
+              form.setValue("cover_image_url", url);
+              if (!isEditMode) {
+                updateField("cover_image_url", url);
+              }
+            }}
+            onRemove={() => {
+              form.setValue("cover_image_url", "");
+              if (!isEditMode) {
+                updateField("cover_image_url", "");
+              }
+            }}
+            onUploading={() => setIsUploading(true)}
+            onEnd={() => setIsUploading(false)}
+          />
         </FormItem>
 
         {/* Title Field */}
@@ -123,19 +188,16 @@ export default function ArticleForm({ initialValues }: ArticleFormProps) {
             type="button"
             variant="outline"
             className="flex-1"
-            onClick={() => {
-              resetFormState();
-              form.reset();
-            }}
+            onClick={handleReset}
           >
             Reset
           </Button>
           <Button
             type="submit"
-            disabled={isPending || isUploading}
+            disabled={isPostPending || isPutPending || isUploading}
             className="flex-1"
           >
-            {isPending || isUploading ? (
+            {isPostPending || isPutPending || isUploading ? (
               <>
                 <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
                 {isUploading ? "Uploading..." : "Publishing..."}

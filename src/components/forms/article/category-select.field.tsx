@@ -16,16 +16,20 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { cn } from "@/lib/utils";
 
 export default function CategorySelectField() {
   const { data: categoryResponse, isLoading } = useQuery(
     categoryQueryOptions(),
   );
-  const form = useFormContext<PostArticleSchema>();
+  const { control, watch } = useFormContext<PostArticleSchema>();
+
+  // Watch the categoryId value
+  const categoryId = watch("categoryId");
 
   return (
     <FormField
-      control={form.control}
+      control={control}
       name="categoryId"
       render={({ field }) => (
         <FormItem>
@@ -33,11 +37,19 @@ export default function CategorySelectField() {
           <FormControl>
             <Select
               onValueChange={field.onChange}
-              defaultValue={field.value}
+              defaultValue={field.value ?? ""}
               disabled={isLoading || !categoryResponse}
             >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select a category" />
+              <SelectTrigger
+                className={cn("w-full", !categoryId && "text-muted-foreground")}
+              >
+                <SelectValue placeholder="Select a category">
+                  {categoryId
+                    ? categoryResponse?.data.find(
+                        (c) => c.id.toString() === categoryId,
+                      )?.name
+                    : "Select a category"}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 {categoryResponse?.data.map((category) => (
@@ -48,6 +60,7 @@ export default function CategorySelectField() {
               </SelectContent>
             </Select>
           </FormControl>
+
           <FormMessage />
         </FormItem>
       )}

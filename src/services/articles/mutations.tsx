@@ -29,10 +29,10 @@ export function usePutArticleMutation() {
     mutationFn: (params: PutArticleParams) => putArticle(params),
     onSuccess: (response) => {
       queryClient.invalidateQueries({
-        queryKey: [
-          articleInfiniteQueryOptions().queryKey,
-          articleDetailQueryOptions(response.data.documentId).queryKey,
-        ],
+        queryKey: [articleInfiniteQueryOptions().queryKey],
+      });
+      queryClient.invalidateQueries({
+        queryKey: articleDetailQueryOptions(response.data.documentId).queryKey,
       });
     },
   });

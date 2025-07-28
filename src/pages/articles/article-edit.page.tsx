@@ -1,6 +1,5 @@
 import ArticleForm from "@/components/forms/article/article.form";
 import { Button } from "@/components/ui/button";
-import type { PostArticleSchema } from "@/schemas/article.schema";
 import { articleDetailQueryOptions } from "@/services/articles/queries";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeftIcon } from "lucide-react";
@@ -18,11 +17,12 @@ export default function ArticleEditPage() {
   if (error) return <div>Error loading article</div>;
   if (isLoading || !response) return <div>Loading...</div>;
 
-  const initialValues: PostArticleSchema = {
+  const initialValues = {
     title: response.data.title,
     description: response.data.description,
     cover_image_url: response.data.cover_image_url,
     categoryId: response.data.category?.id?.toString(),
+    documentId: response.data.documentId,
   };
 
   return (
