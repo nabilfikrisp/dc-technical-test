@@ -77,3 +77,22 @@ export async function postArticle(requestBody: PostArticleRequestBody) {
   );
   return response.data;
 }
+
+export async function putArticle({
+  requestBody,
+  documentId,
+}: {
+  requestBody: PostArticleRequestBody;
+  documentId: string;
+}) {
+  const formattedRequestBody = {
+    data: {
+      ...requestBody,
+    },
+  };
+  const response = await api.put<ApiResponse<ArticleSchema>>(
+    `/api/articles/${documentId}`,
+    formattedRequestBody,
+  );
+  return response.data;
+}

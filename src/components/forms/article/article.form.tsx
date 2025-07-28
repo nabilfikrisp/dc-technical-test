@@ -24,14 +24,18 @@ import { useNavigate } from "react-router";
 import { Loader2Icon } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 
-export default function ArticleForm() {
+// initial value for edit
+type ArticleFormProps = {
+  initialValues?: PostArticleSchema;
+};
+export default function ArticleForm({ initialValues }: ArticleFormProps) {
   const navigate = useNavigate();
   const { formState, resetFormState, isUploading } = useArticleFormStore();
   const { mutateAsync, isPending } = usePostArticleMutation();
 
   const form = useForm<PostArticleSchema>({
     resolver: zodResolver(postArticleSchema),
-    defaultValues: formState,
+    defaultValues: initialValues || formState,
   });
 
   async function handleSubmit(values: PostArticleSchema) {
@@ -70,7 +74,7 @@ export default function ArticleForm() {
         {/* Cover Image Upload */}
         <FormItem>
           <FormLabel className="text-base">Cover Image</FormLabel>
-          <UploadFileField />
+          <UploadFileField initialValue={initialValues?.cover_image_url} />
         </FormItem>
 
         {/* Title Field */}

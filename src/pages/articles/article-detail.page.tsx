@@ -11,6 +11,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { formatDate } from "@/lib/utils";
 import ArticleDetailSkeleton from "@/components/articles/article-detail-skeleton";
 import CommentSection from "@/components/comments/comment-section";
+import useAuthStore from "@/stores/auth.store";
 
 export default function ArticleDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -24,6 +25,10 @@ export default function ArticleDetailPage() {
 }
 
 function ArticleDetail({ article }: { article: ArticleSchema }) {
+  const { user } = useAuthStore();
+
+  const isAuthor = user!.id === article.user!.id;
+
   return (
     <div className="mx-auto w-full max-w-[1024px] flex-1 px-5 py-10">
       <div className="flex flex-col gap-5">
@@ -33,7 +38,11 @@ function ArticleDetail({ article }: { article: ArticleSchema }) {
           category={article.category}
         />
 
-        {article.user && <UserInfo name={article.user.username} />}
+        {article.user && (
+          <UserInfo name={article.user.username} isAuthor={isAuthor} />
+        )}
+
+        {isAuthor && <AuthorActions article={article} />}
 
         {article.cover_image_url && (
           <ArticleCoverImage
@@ -107,7 +116,7 @@ function BackButton() {
   );
 }
 
-function UserInfo({ name }: { name: string }) {
+function UserInfo({ name, isAuthor }: { name: string; isAuthor: boolean }) {
   return (
     <div className="flex items-center gap-4">
       <Avatar className="h-12 w-12">
@@ -118,8 +127,11 @@ function UserInfo({ name }: { name: string }) {
             .join("")}
         </AvatarFallback>
       </Avatar>
-      <div>
+      <div className="flex items-center gap-2">
         <p className="font-medium">{name}</p>
+        {isAuthor && (
+          <span className="text-muted-foreground text-sm">(you)</span>
+        )}
       </div>
     </div>
   );
@@ -142,5 +154,18 @@ function ArticleContent({ content }: { content: string }) {
         ))}
       </div>
     </article>
+  );
+}
+
+function AuthorActions({ article }: { article: ArticleSchema }) {
+  return (
+    <div className="flex gap-2">
+      <Button asChild variant="outline">
+        <Link to={`/articles/${article.documentId}/edit`}>Edit</Link>
+      </Button>
+      <Button asChild variant="destructive">
+        <Link to={`/articles/delete/${article.documentId}`}>Delete</Link>
+      </Button>
+    </div>
   );
 }

@@ -1,7 +1,10 @@
 import type { PostArticleRequestBody } from "@/schemas/article.schema";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { postArticle } from "./api";
-import { articleInfiniteQueryOptions } from "./queries";
+import { postArticle, putArticle } from "./api";
+import {
+  articleDetailQueryOptions,
+  articleInfiniteQueryOptions,
+} from "./queries";
 
 export function usePostArticleMutation() {
   const queryClient = useQueryClient();
@@ -11,6 +14,25 @@ export function usePostArticleMutation() {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: articleInfiniteQueryOptions().queryKey,
+      });
+    },
+  });
+}
+
+type PutArticleParams = {
+  documentId: string;
+  requestBody: PostArticleRequestBody;
+};
+export function usePutArticleMutation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (params: PutArticleParams) => putArticle(params),
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({
+        queryKey: [
+          articleInfiniteQueryOptions().queryKey,
+          articleDetailQueryOptions(response.data.documentId).queryKey,
+        ],
       });
     },
   });

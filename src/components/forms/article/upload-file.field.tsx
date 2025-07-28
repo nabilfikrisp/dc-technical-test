@@ -3,7 +3,7 @@ import { useFormContext } from "react-hook-form";
 import { Input } from "../../ui/input";
 import { useUploadFileMutation } from "@/services/upload/mutations";
 import { Button } from "../../ui/button";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
 import useArticleFormStore from "@/stores/article-form.store";
 import { XIcon, UploadCloudIcon } from "lucide-react";
@@ -11,11 +11,21 @@ import ImageWithBackdrop from "@/components/image-with-backdrop";
 import { parseApiError } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 
-export default function UploadFileField() {
+type UploadFileFieldProps = {
+  initialValue?: string;
+};
+export default function UploadFileField({
+  initialValue,
+}: UploadFileFieldProps) {
   const { formState, updateField, setIsUploading } = useArticleFormStore();
+  const [imagePreview, setImagePreview] = useState<string | null>(
+    initialValue || formState.cover_image_url || null,
+  );
   const { setValue } = useFormContext<PostArticleSchema>();
   const { mutateAsync } = useUploadFileMutation();
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const isEdit = !!initialValue;
 
   async function handleUpload() {
     const file = fileInputRef.current?.files?.[0];
@@ -26,7 +36,11 @@ export default function UploadFileField() {
 
     try {
       const response = await mutateAsync(file);
-      updateField("cover_image_url", response.url);
+
+      if (!isEdit) {
+        updateField("cover_image_url", response.url);
+      }
+      setImagePreview(response.url);
       setValue("cover_image_url", response.url);
       toast.success("File uploaded successfully", { id: toastId });
     } catch (error: unknown) {
@@ -41,13 +55,14 @@ export default function UploadFileField() {
   }
 
   function handleRemove() {
-    updateField("cover_image_url", "");
+    if (!isEdit) {
+      updateField("cover_image_url", "");
+    }
+    setImagePreview(null);
     setValue("cover_image_url", "");
     if (fileInputRef.current) fileInputRef.current.value = "";
     toast.success("Image removed");
   }
-
-  const imagePreview = formState.cover_image_url;
 
   if (imagePreview) {
     return (
@@ -55,7 +70,7 @@ export default function UploadFileField() {
         <ImageWithBackdrop
           src={imagePreview}
           alt="preview"
-          className="h-64 w-full object-cover"
+          className="w-full object-cover"
         />
         <Button
           type="button"
