@@ -24,7 +24,7 @@ export default function Footer() {
     <footer className="bg-background border-border border-t py-6">
       <div className="mx-auto flex max-w-[1024px] flex-col items-center justify-between gap-2 px-5 md:flex-row">
         <span className="text-muted-foreground text-sm">
-          © {new Date().getFullYear()} TravelTalk. All rights reserved.
+          © {new Date().getFullYear()} Micanskuy.
         </span>
         <nav className="flex gap-4 text-sm">
           <Link

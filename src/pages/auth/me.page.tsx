@@ -8,12 +8,18 @@ import { Skeleton } from "@/components/ui/skeleton";
 import type { ArticleSchema } from "@/schemas/article.schema";
 import { meQueryOptions } from "@/services/auth/queries";
 import { useQuery } from "@tanstack/react-query";
-import { ExternalLinkIcon, PlusIcon } from "lucide-react";
+import {
+  ExternalLinkIcon,
+  MessageSquareIcon,
+  NewspaperIcon,
+  PlusIcon,
+} from "lucide-react";
 import { Link } from "react-router";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { CommentWithArticleSchema } from "@/schemas/user.schema";
 import { useQueryState } from "nuqs";
 import CommentDeleteDialog from "@/components/comments/comment-delete-dialog";
+import { formatDistanceToNow } from "date-fns";
 
 function filterValidArticles(data: ArticleSchema[]): ArticleSchema[] {
   // no null published articles
@@ -89,9 +95,19 @@ export default function MePage() {
 
 function MyArticles({ articles }: { articles: ArticleSchema[] }) {
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-5 py-5">
       <div className="flex items-center gap-2">
-        <h1 className="text-2xl font-bold">My Articles</h1>
+        <div className="flex items-center gap-3">
+          <div className="bg-primary/10 rounded-xl p-3">
+            <NewspaperIcon className="text-primary h-6 w-6" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">My Articles</h1>
+            <p className="text-muted-foreground text-sm">
+              {articles.length} {articles.length === 1 ? "article" : "articles"}
+            </p>
+          </div>
+        </div>
         <Button asChild size="sm" className="ml-auto">
           <Link to="/articles/create" className="flex items-center gap-2">
             <PlusIcon className="h-4 w-4" />
@@ -107,46 +123,93 @@ function MyArticles({ articles }: { articles: ArticleSchema[] }) {
 
 function MyComments({ comments }: { comments: CommentWithArticleSchema[] }) {
   return (
-    <div className="space-y-4">
-      <h1 className="text-xl font-semibold">My Comments ({comments.length})</h1>
+    <div className="space-y-6 py-5">
+      <div className="flex items-center gap-3">
+        <div className="bg-primary/10 rounded-xl p-3">
+          <MessageSquareIcon className="text-primary h-6 w-6" />
+        </div>
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">My Comments</h1>
+          <p className="text-muted-foreground text-sm">
+            {comments.length} {comments.length === 1 ? "comment" : "comments"}
+          </p>
+        </div>
+      </div>
 
       {comments.length > 0 ? (
-        <div className="space-y-3">
+        <div className="space-y-4">
           {comments.map((comment) => (
-            <div key={comment.id} className="space-y-2 rounded-lg border p-4">
-              <p className="text-sm">{comment.content}</p>
-
-              <div className="text-muted-foreground flex items-center justify-start text-xs">
-                <span>
-                  on:
-                  {comment.article ? comment.article.title : "deleted article"}
-                </span>
-                <div className="ml-auto flex items-center gap-2">
-                  {comment.article && (
-                    <Button variant="outline" size="icon" asChild>
-                      <Link
-                        to={`/articles/${comment.article.documentId}`}
-                        className="flex items-center gap-1 text-blue-500 hover:underline"
-                      >
-                        <ExternalLinkIcon className="h-4 w-4" />
-                      </Link>
-                    </Button>
-                  )}
-                  <CommentDeleteDialog documentId={comment.documentId} />
+            <div
+              key={comment.id}
+              className="group bg-card hover:border-primary/30 relative overflow-hidden rounded-xl border p-5 transition-all hover:shadow-sm"
+            >
+              <div className="flex items-start gap-4">
+                <div className="bg-primary/5 flex h-8 w-8 items-center justify-center rounded-xl">
+                  <MessageSquareIcon className="text-primary h-4 w-4" />
                 </div>
+                <div className="flex-1 space-y-3">
+                  <p className="text-foreground text-sm leading-snug">
+                    {comment.content}
+                  </p>
+
+                  <div className="flex flex-wrap items-center gap-2 text-sm">
+                    <span className="text-muted-foreground bg-muted/50 inline-flex items-center rounded-full py-1 text-xs">
+                      {comment.article ? (
+                        <>
+                          <span className="line-clamp-1 max-w-[160px]">
+                            {comment.article.title}
+                          </span>
+                          {comment.article && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="ml-1 h-5 w-5 text-blue-500 hover:bg-blue-500/10"
+                              asChild
+                            >
+                              <Link
+                                to={`/articles/${comment.article.documentId}`}
+                              >
+                                <ExternalLinkIcon className="h-3 w-3" />
+                              </Link>
+                            </Button>
+                          )}
+                        </>
+                      ) : (
+                        "Deleted article"
+                      )}
+                    </span>
+                    <span className="text-muted-foreground text-xs">
+                      {formatDistanceToNow(new Date(comment.createdAt), {
+                        addSuffix: true,
+                      })}
+                    </span>
+                  </div>
+                </div>
+
+                <CommentDeleteDialog
+                  documentId={comment.documentId}
+                  className="mt-auto"
+                />
               </div>
             </div>
           ))}
         </div>
       ) : (
-        <p className="text-muted-foreground py-8 text-center">
-          No comments found.
-        </p>
+        <div className="flex flex-col items-center justify-center space-y-4 rounded-xl border-2 border-dashed p-8 text-center">
+          <MessageSquareIcon className="text-muted-foreground h-10 w-10" />
+          <h3 className="text-lg font-medium">No comments yet</h3>
+          <p className="text-muted-foreground max-w-md text-sm">
+            Your comments will appear here once you start engaging with
+            articles.
+          </p>
+          <Button variant="outline" className="mt-4" asChild>
+            <Link to="/articles">Browse articles</Link>
+          </Button>
+        </div>
       )}
     </div>
   );
 }
-
 function LoadingState() {
   return (
     <div className="mx-auto flex w-full max-w-[1024px] flex-col gap-5 px-5 py-10">

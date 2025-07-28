@@ -1,13 +1,15 @@
 import { Button } from "./ui/button";
-import { Link } from "react-router";
+import { NavLink } from "react-router";
 import { LogIn } from "lucide-react";
 import LogoutButton from "./logout-button";
 import { ThemeToggle } from "./theme-toggle";
 import useAuthStore from "@/stores/auth.store";
+import { cn } from "@/lib/utils";
 
 import { articleInfiniteQueryOptions } from "@/services/articles/queries";
 import { useQueryClient } from "@tanstack/react-query";
 import { DEFAULT_ARTICLE_PARAMS } from "@/services/articles/default-params";
+import { meQueryOptions } from "@/services/auth/queries";
 
 export default function Header() {
   const queryClient = useQueryClient();
@@ -15,20 +17,38 @@ export default function Header() {
 
   function renderButton() {
     if (user) {
-      return <LogoutButton />;
+      return (
+        <>
+          <NavLink
+            to="/me"
+            className={({ isActive }) =>
+              cn(
+                "font-medium transition-colors",
+                isActive
+                  ? "text-primary"
+                  : "text-foreground hover:text-primary",
+              )
+            }
+            onMouseEnter={prefetchMe}
+          >
+            Me
+          </NavLink>
+          <LogoutButton />
+        </>
+      );
     }
 
     return (
       <Button size="sm" asChild>
-        <Link to="/login">
+        <NavLink to="/login">
           <LogIn className="mr-2 h-4 w-4" />
           Login
-        </Link>
+        </NavLink>
       </Button>
     );
   }
 
-  function prefecthArticles() {
+  function prefetchArticles() {
     queryClient.prefetchInfiniteQuery(
       articleInfiniteQueryOptions({
         params: {
@@ -42,30 +62,49 @@ export default function Header() {
     );
   }
 
+  function prefetchMe() {
+    queryClient.prefetchQuery(meQueryOptions());
+  }
+
   return (
     <header className="bg-background border-border sticky top-0 z-50 border-b shadow-sm">
       <div className="mx-auto flex max-w-[1024px] items-center justify-end px-5 py-3 sm:justify-between">
-        <Link to="/" className="hidden items-center gap-2 sm:flex">
+        <NavLink to="/" className="hidden items-center gap-2 sm:flex">
           <span className="text-primary text-2xl font-bold tracking-tight">
             TravelTalk
           </span>
-        </Link>
+        </NavLink>
 
         <nav className="flex items-center gap-4">
           <ThemeToggle />
-          <Link
+          <NavLink
             to="/"
-            className="text-foreground hover:text-primary font-medium transition-colors"
+            end
+            className={({ isActive }) =>
+              cn(
+                "font-medium transition-colors",
+                isActive
+                  ? "text-primary"
+                  : "text-foreground hover:text-primary",
+              )
+            }
           >
             Home
-          </Link>
-          <Link
+          </NavLink>
+          <NavLink
             to="/articles"
-            className="text-foreground hover:text-primary font-medium transition-colors"
-            onMouseEnter={prefecthArticles}
+            className={({ isActive }) =>
+              cn(
+                "font-medium transition-colors",
+                isActive
+                  ? "text-primary"
+                  : "text-foreground hover:text-primary",
+              )
+            }
+            onMouseEnter={prefetchArticles}
           >
             Articles
-          </Link>
+          </NavLink>
           {renderButton()}
         </nav>
       </div>

@@ -18,9 +18,11 @@ import { useDeleteCommentMutation } from "@/services/comments/mutations";
 export default function CommentDeleteDialog({
   documentId,
   onSuccess,
+  className,
 }: {
   documentId: string;
   onSuccess?: () => void;
+  className?: string;
 }) {
   const { mutateAsync: deleteComment, isPending } = useDeleteCommentMutation();
 
@@ -42,7 +44,12 @@ export default function CommentDeleteDialog({
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="destructive" disabled={isPending} size="icon">
+        <Button
+          variant="destructive"
+          disabled={isPending}
+          size="icon"
+          className={className}
+        >
           <Trash2Icon />
         </Button>
       </AlertDialogTrigger>
