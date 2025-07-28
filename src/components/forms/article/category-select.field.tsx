@@ -6,7 +6,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
+} from "@/components/ui/select";
 import type { PostArticleSchema } from "@/schemas/article.schema";
 import { useFormContext } from "react-hook-form";
 import {
@@ -15,7 +15,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../ui/form";
+} from "@/components/ui/form";
 
 export default function CategorySelectField() {
   const { data: categoryResponse, isLoading } = useQuery(

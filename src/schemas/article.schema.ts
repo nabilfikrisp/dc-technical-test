@@ -31,7 +31,7 @@ export const postArticleRequestBody = postArticleSchema
     categoryId: true,
   })
   .extend({
-    category: z.object({ id: z.number() }).nullable().optional(),
+    category: z.number().nullable().optional(),
   });
 
 export type ArticleSchema = z.infer<typeof articleSchema>;
