@@ -121,3 +121,16 @@ While Redux with RTK Query is powerful, TanStack Query provides:
 - [Shadcn/ui Documentation](https://ui.shadcn.com/)
 - [nuqs Documentation](https://nuqs.47ng.com/)
 - [Tailwind CSS v4 Documentation](https://tailwindcss.com/)
+
+## 🌐 Deployment
+
+Deployed in cloudflare pages
+
+- [App](https://1dec9661.dc-technical-test.pages.dev/)
+
+## 🚧 Room For Improvement
+
+- Auto-create new categories during article creation
+- Edit comment functionality
+- WYSIWYG editor for article body
+- Optimize populate query
